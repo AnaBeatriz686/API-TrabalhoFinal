@@ -2,7 +2,6 @@ const express = require('express');
 require('dotenv').config();
 
 const app = express();
-
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
@@ -19,6 +18,10 @@ const categoriasRoutes = require('./routes/categorias');
 
 app.use('/api/categorias', categoriasRoutes);
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta ${PORT}`);
+    });
+}
+
+module.exports = app;
