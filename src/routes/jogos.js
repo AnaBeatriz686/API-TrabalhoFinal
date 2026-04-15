@@ -6,7 +6,17 @@ const autenticar = require('../middleware/auth');
 
 router.get('/', (req, res) => {
     try {
-        const jogos = db.prepare(`
+        const { 
+            categoria_id, 
+            preco_min, 
+            preco_max, 
+            ordem, 
+            direcao,
+            pagina = 1, 
+            limite = 10 
+        } = req.query;
+
+        let sql = `
             SELECT 
                 j.id,
                 j.nome,
@@ -16,11 +26,74 @@ router.get('/', (req, res) => {
                 c.nome AS categoria_nome
             FROM jogos j
             INNER JOIN categorias c ON j.categoria_id = c.id
-            ORDER BY j.nome
-        `).all();
+            WHERE 1=1
+        `;
 
-        res.json(jogos);
+        const params = [];
+
+        if (categoria_id) {
+            sql += ' AND j.categoria_id = ?';
+            params.push(parseInt(categoria_id));
+        }
+
+        if (preco_min) {
+            sql += ' AND j.preco >= ?';
+            params.push(parseFloat(preco_min));
+        }
+
+        if (preco_max) {
+            sql += ' AND j.preco <= ?';
+            params.push(parseFloat(preco_max));
+        }
+
+        if (ordem) {
+            const camposValidos = ['nome', 'preco', 'created_at'];
+
+            if (camposValidos.includes(ordem)) {
+                sql += ` ORDER BY j.${ordem}`;
+
+                if (direcao === 'desc') {
+                    sql += ' DESC';
+                } else {
+                    sql += ' ASC';
+                }
+            }
+        }
+
+        let countSql = sql.replace(
+            `SELECT 
+                j.id,
+                j.nome,
+                j.preco,
+                j.created_at,
+                c.id AS categoria_id,
+                c.nome AS categoria_nome`,
+            'SELECT COUNT(*) as total'
+        );
+
+        const total = db.prepare(countSql).get(...params).total;
+
+        const limiteNum = parseInt(limite);
+        const paginaNum = parseInt(pagina);
+        const offset = (paginaNum - 1) * limiteNum;
+
+        sql += ' LIMIT ? OFFSET ?';
+        params.push(limiteNum, offset);
+
+        const jogos = db.prepare(sql).all(...params);
+
+        res.json({
+            dados: jogos,
+            paginacao: {
+                pagina_atual: paginaNum,
+                itens_por_pagina: limiteNum,
+                total_itens: total,
+                total_paginas: Math.ceil(total / limiteNum)
+            }
+        });
+
     } catch (error) {
+        console.error(error);
         res.status(500).json({ erro: 'Erro ao buscar jogos' });
     }
 });
@@ -30,9 +103,17 @@ router.get('/:id', (req, res) => {
 
         const id = parseInt(req.params.id);
 
-        const jogo = db.prepare(
-            'SELECT * FROM jogos WHERE id = ?'
-        ).get(id);
+        const jogo = db.prepare(`
+            SELECT 
+                j.id,
+                j.nome,
+                j.preco,
+                j.created_at,
+                c.nome AS categoria_nome
+            FROM jogos j
+            INNER JOIN categorias c ON j.categoria_id = c.id
+            WHERE j.id = ?
+        `).get(id);
 
         if (!jogo) {
             return res.status(404).json({
@@ -55,6 +136,10 @@ router.post('/', autenticar, (req, res) => {
             return res.status(400).json({ erro: 'Campos obrigatórios' });
         }
 
+        if (isNaN(preco) || preco <= 0) {
+            return res.status(400).json({ erro: 'Preço deve ser um número positivo' });
+        }
+
         const categoriaExiste = db.prepare(
             'SELECT id FROM categorias WHERE id = ?'
         ).get(categoria_id);
@@ -67,10 +152,18 @@ router.post('/', autenticar, (req, res) => {
             INSERT INTO jogos (nome, preco, estoque, categoria_id)
             VALUES (?, ?, ?, ?)
         `).run(nome, preco, estoque, categoria_id);
-
-        const jogo = db.prepare(
-            'SELECT * FROM jogos WHERE id = ?'
-        ).get(result.lastInsertRowid);
+        
+        const jogo = db.prepare(`
+            SELECT 
+                j.id,
+                j.nome,
+                j.preco,
+                j.created_at,
+                c.nome AS categoria_nome
+            FROM jogos j
+            INNER JOIN categorias c ON j.categoria_id = c.id
+            WHERE j.id = ?
+        `).get(result.lastInsertRowid);
 
         res.status(201).json(jogo);
 
@@ -101,6 +194,12 @@ router.put('/:id', autenticar, (req, res) => {
             });
         }
 
+        if (isNaN(preco) || preco <= 0) {
+            return res.status(400).json({
+                erro: 'Preço deve ser um número positivo'
+            });
+        }
+
         const categoriaExiste = db.prepare(
             'SELECT id FROM categorias WHERE id = ?'
         ).get(categoria_id);
@@ -117,9 +216,18 @@ router.put('/:id', autenticar, (req, res) => {
             WHERE id = ?
         `).run(nome, preco, categoria_id, id);
 
-        const jogoAtualizado = db.prepare(
-            'SELECT * FROM jogos WHERE id = ?'
-        ).get(id);
+
+        const jogoAtualizado = db.prepare(`
+            SELECT 
+                j.id,
+                j.nome,
+                j.preco,
+                j.created_at,
+                c.nome AS categoria_nome
+            FROM jogos j
+            INNER JOIN categorias c ON j.categoria_id = c.id
+            WHERE j.id = ?
+        `).get(id);
 
         res.json(jogoAtualizado);
 
@@ -152,3 +260,5 @@ router.delete('/:id', autenticar, (req, res) => {
         res.status(500).json({ erro: 'Erro ao deletar jogo' });
     }
 });
+
+module.exports = router;
