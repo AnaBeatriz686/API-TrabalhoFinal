@@ -1,3 +1,8 @@
+/**
+ * Rota de autenticação para registro e login de usuários.
+ * Utiliza bcrypt para hash de senhas e JWT para geração de tokens de autenticação.
+ */
+
 const express = require('express');
 const router = express.Router();
 
@@ -6,6 +11,12 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+/** 
+ * Rota de registro de novos usuários.
+ * Valida os campos obrigatórios, verifica se o email já está cadastrado, faz o hash da senha e gera um token JWT para o usuário registrado.
+ * Retorna o token e os dados do usuário registrado.
+ */
 
 router.post('/register', async (req, res) => {
     try {
@@ -52,6 +63,12 @@ router.post('/register', async (req, res) => {
         res.status(500).json({ erro: 'Erro ao registrar' });
     }
 });
+
+/**
+ * Rota de login de usuários.
+ * Valida os campos obrigatórios, verifica se o email existe, compara a senha fornecida com o hash armazenado e gera um token JWT para o usuário autenticado.
+ * Retorna o token e os dados do usuário autenticado.
+ */
 
 router.post('/login', async (req, res) => {
     try {

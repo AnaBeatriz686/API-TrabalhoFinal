@@ -1,9 +1,14 @@
-console.log('DATABASE CERTO');
+/**
+ * Configuração do banco de dados SQLite usando better-sqlite3.
+ */
 const Database = require('better-sqlite3');
 const db = new Database('jogos.db');
 
 db.exec('PRAGMA foreign_keys = ON');
 
+/**
+ * Criação das tabelas categorias, jogos e usuarios, com as devidas relações e índices para otimização.
+ */
 const createCategorias = `
     CREATE TABLE IF NOT EXISTS categorias (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,6 +48,9 @@ const createUsuarios = `
     )
 `;
 
+/**  
+ * Criação do índice para otimização da consulta por email.
+*/
 db.exec(createUsuarios);
 
 db.exec('CREATE INDEX IF NOT EXISTS idx_email ON usuarios(email)');

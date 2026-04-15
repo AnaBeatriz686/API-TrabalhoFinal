@@ -1,8 +1,18 @@
+/**
+ * Rota de jogos para gerenciamento dos jogos disponíveis na loja.
+ * 
+ */
 const express = require('express');
 const router = express.Router();
 
 const db = require('../database/database');
 const autenticar = require('../middleware/auth');
+
+/** 
+ * Rota para obter todos os jogos.
+ * Retorna uma lista de jogos com seus respectivos detalhes.
+ * Permite filtros por categoria, faixa de preço, ordenação e paginação.
+ */
 
 router.get('/', (req, res) => {
     try {
@@ -98,6 +108,11 @@ router.get('/', (req, res) => {
     }
 });
 
+/** 
+ * Rota para obter um jogo específico.
+ * Retorna os detalhes do jogo solicitado.
+ */
+
 router.get('/:id', (req, res) => {
     try {
 
@@ -127,6 +142,12 @@ router.get('/:id', (req, res) => {
         res.status(500).json({ erro: 'Erro ao buscar jogo' });
     }
 });
+
+/** 
+ * Rota para criar um novo jogo.
+ * Valida os campos obrigatórios e insere o jogo no banco de dados.
+ * Retorna os dados do jogo criado.
+ */
 
 router.post('/', autenticar, (req, res) => {
     try {
@@ -171,6 +192,12 @@ router.post('/', autenticar, (req, res) => {
         res.status(500).json({ erro: 'Erro ao criar jogo' });
     }
 });
+
+/** 
+ * Rota para atualizar um jogo existente.
+ * Valida os campos e atualiza o jogo no banco de dados.
+ * Retorna os dados do jogo atualizado.
+*/
 
 router.put('/:id', autenticar, (req, res) => {
     try {
@@ -235,6 +262,12 @@ router.put('/:id', autenticar, (req, res) => {
         res.status(500).json({ erro: 'Erro ao atualizar jogo' });
     }
 });
+
+/** 
+ * Rota para deletar um jogo.
+ * Valida se o jogo existe e deleta o jogo do banco de dados.
+ * Retorna um status 204 (sem conteúdo) em caso de sucesso.
+ */
 
 router.delete('/:id', autenticar, (req, res) => {
     try {

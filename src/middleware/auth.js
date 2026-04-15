@@ -1,3 +1,8 @@
+/**
+ * Middleware de autenticação usando JWT para proteger rotas que exigem autenticação.
+ * O middleware verifica a presença e validade do token JWT no cabeçalho Authorization das requisições.
+ */
+
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 

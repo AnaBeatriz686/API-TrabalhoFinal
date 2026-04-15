@@ -1,3 +1,8 @@
+/**
+ * Testes para a rota de jogos utilizando Jest e Supertest.
+ * Os testes verificam a funcionalidade de listagem de jogos e a resposta para jogos inexistentes.
+ */
+    
 const request = require('supertest');
 const app = require('../src/index');
 

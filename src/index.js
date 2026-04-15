@@ -1,3 +1,8 @@
+/**
+ * Ponto de entrada da aplicação Express para a API de gerenciamento de jogos.
+ * Configura as rotas de autenticação, jogos e categorias, e inicia o servidor.
+ */
+
 const express = require('express');
 require('dotenv').config();
 

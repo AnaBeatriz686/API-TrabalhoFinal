@@ -1,3 +1,6 @@
+/**
+ * Script de seed para preencher o banco de dados com categorias e jogos iniciais.
+ */
 const db = require('./database');
 
 db.exec('DELETE FROM jogos');

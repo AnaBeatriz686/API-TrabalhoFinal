@@ -1,11 +1,25 @@
+/**
+ * Rota de categorias para gerenciamento das categorias de jogos.
+ */
+
 const express = require('express');
 const router = express.Router();
 const db = require('../database/database');
+
+/** 
+ * Rota para obter todas as categorias.
+ * Retorna uma lista de categorias com seus respectivos jogos.
+*/
 
 router.get('/', (req, res) => {
     const categorias = db.prepare('SELECT * FROM categorias').all();
     res.json(categorias);
 });
+
+/** 
+ * Rota para obter uma categoria específica.
+ * Retorna os detalhes da categoria e os jogos associados.
+ */
 
 router.get('/:id', (req, res) => {
     const id = parseInt(req.params.id);
@@ -30,6 +44,12 @@ router.get('/:id', (req, res) => {
     });
 });
 
+/** 
+ * Rota para criar uma nova categoria.
+ * Valida os campos obrigatórios e insere a categoria no banco de dados.
+ * Retorna os dados da categoria criada.
+ */
+
 router.post('/', (req, res) => {
     const { nome, descricao } = req.body;
 
@@ -49,6 +69,12 @@ router.post('/', (req, res) => {
 
     res.status(201).json(categoria);
 });
+
+/** 
+ * Rota para deletar uma categoria.
+ * Valida se a categoria tem jogos associados e deleta a categoria do banco de dados.
+ * Retorna um status 204 (sem conteúdo) em caso de sucesso.
+ */
 
 router.delete('/:id', (req, res) => {
     const id = parseInt(req.params.id);
