@@ -4,6 +4,9 @@
     - Permite criar, listar, atualizar e remover jogos e categorias e gerenciar usuários.
     - Os dados são armazenados utilizando o SQLite.
 
+## Deploy:
+    API disponível em: 
+
 ## Tecnologias utilizadas:
 
     - Node.js.
@@ -48,13 +51,14 @@
     PORT=3000
     JWT_SECRET=sua_chave
 
-## Autenticação
+## Segurança
 
-    Rotas protegidas utilizam JWT:
+    - Senhas são armazenadas utilizando hash com bcrypt.
+    - Rotas protegidas utilizam autenticação JWT.
+    - Tokens devem ser enviados no header:
+    Authorization: Bearer TOKEN
 
-    Authorization: Bearer SEU_TOKEN_AQUI
-
-## Endpoints
+## Endpoints:
 
 ### Auth
 
@@ -117,7 +121,7 @@
       "descricao": "Jogos de RPG"
     }
 
-## Paginação
+## Paginação:
 
     Resposta:
     {
@@ -130,7 +134,32 @@
       }
     }
 
-## Testes Postman
+## Validações:
+
+### Jogos
+    - nome: obrigatório.
+    - preco: obrigatório e deve ser um número positivo.
+    - categoria_id: obrigatório e deve existir na tabela de categorias.
+
+### Usuários
+    - nome: obrigatório.
+    - email: obrigatório e único.
+    - senha: obrigatória (armazenada com hash).
+
+### Categorias
+    - nome: obrigatório e único.
+
+## Status Codes:
+
+    - 200 OK → Requisição bem sucedida.
+    - 201 Created → Recurso criado com sucesso.
+    - 204 No Content → Recurso deletado com sucesso.
+    - 400 Bad Request → Erro de validação.
+    - 401 Unauthorized → Acesso não autorizado (token inválido ou ausente).
+    - 404 Not Found → Recurso não encontrado.
+    - 500 Internal Server Error → Erro interno do servidor.
+
+## Testes Postman:
 
 
 
