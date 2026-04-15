@@ -5,7 +5,7 @@
     - Os dados são armazenados utilizando o SQLite.
 
 ## Deploy:
-    API disponível em: 
+    API disponível em: https://api-trabalhofinal.onrender.com/api/jogos
 
 ## Tecnologias utilizadas:
 
