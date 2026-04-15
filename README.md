@@ -7,7 +7,7 @@
 ---
 
 ## Deploy:
-    [API disponível aqui](https://api-trabalhofinal.onrender.com/api/jogos).
+[API disponível aqui](https://api-trabalhofinal.onrender.com/api/jogos).
 
 ---
 
