@@ -99,3 +99,28 @@ router.put('/:id', autenticar, (req, res) => {
         res.status(500).json({ erro: 'Erro ao atualizar jogo' });
     }
 });
+
+router.delete('/:id', autenticar, (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+
+        const jogoExiste = db.prepare(
+            'SELECT * FROM jogos WHERE id = ?'
+        ).get(id);
+
+        if (!jogoExiste) {
+            return res.status(404).json({
+                erro: 'Jogo não encontrado'
+            });
+        }
+
+        db.prepare(
+            'DELETE FROM jogos WHERE id = ?'
+        ).run(id);
+
+        res.status(204).send();
+
+    } catch (error) {
+        res.status(500).json({ erro: 'Erro ao deletar jogo' });
+    }
+});
