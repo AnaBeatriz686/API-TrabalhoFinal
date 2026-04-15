@@ -1,0 +1,35 @@
+const Database = require('better-sqlite3');
+const db = new Database('jogos.db');
+
+db.exec('PRAGMA foreign_keys = ON');
+
+const createCategorias = `
+    CREATE TABLE IF NOT EXISTS categorias (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome VARCHAR(50) NOT NULL UNIQUE,
+        descricao TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+`;
+
+db.exec(createCategorias);
+
+const createJogos = `
+    CREATE TABLE IF NOT EXISTS jogos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome VARCHAR(100) NOT NULL,
+        preco DECIMAL(10,2) NOT NULL,
+        categoria_id INTEGER NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        
+        FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+            ON DELETE RESTRICT
+            ON UPDATE CASCADE
+    )
+`;
+
+db.exec(createJogos);
+
+console.log('Banco configurado!');
+
+module.exports = db;
