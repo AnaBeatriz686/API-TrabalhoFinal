@@ -11,6 +11,10 @@ const authRoutes = require('./routes/auth');
 
 app.use('/auth', authRoutes);
 
+const jogosRoutes = require('./routes/jogos');
+
+app.use('/api/jogos', jogosRoutes);
+
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
