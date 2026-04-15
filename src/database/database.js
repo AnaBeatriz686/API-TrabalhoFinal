@@ -1,3 +1,4 @@
+console.log('DATABASE CERTO');
 const Database = require('better-sqlite3');
 const db = new Database('jogos.db');
 
