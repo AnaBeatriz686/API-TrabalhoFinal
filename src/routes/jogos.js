@@ -6,20 +6,18 @@ const autenticar = require('../middleware/auth');
 
 router.get('/', (req, res) => {
     try {
-        const stmt = db.prepare(`
+        const jogos = db.prepare(`
             SELECT 
                 j.id,
                 j.nome,
                 j.preco,
-                j.estoque,
                 j.created_at,
                 c.id AS categoria_id,
                 c.nome AS categoria_nome
             FROM jogos j
             INNER JOIN categorias c ON j.categoria_id = c.id
-        `);
-
-        const jogos = stmt.all();
+            ORDER BY j.nome
+        `).all();
 
         res.json(jogos);
     } catch (error) {
