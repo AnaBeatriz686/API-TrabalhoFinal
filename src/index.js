@@ -3,10 +3,12 @@
  * Configura as rotas de autenticação, jogos e categorias, e inicia o servidor.
  */
 
-const express = require('express');
 require('dotenv').config();
+require('./database/seed');
 
+const express = require('express');
 const app = express();
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
