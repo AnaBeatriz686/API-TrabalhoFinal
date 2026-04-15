@@ -3,9 +3,6 @@
  */
 const db = require('./database');
 
-db.exec('DELETE FROM jogos');
-db.exec('DELETE FROM categorias');
-
 const categorias = [
     ['Ação', 'Jogos de ação'],
     ['Esporte', 'Jogos esportivos'],
